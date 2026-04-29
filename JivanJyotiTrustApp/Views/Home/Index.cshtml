@@ -5,18 +5,33 @@
         .GroupBy(x => x.index / 3)
         .Select(g => g.Select(x => x.item).ToList())
         .ToList();
+    var bannerItems = Model.Banners.Any()
+        ? Model.Banners
+        : [new BannerItem { Title = "Jivan Jyoti Trust", ImagePath = "/images/banners/placeholder-banner.svg" }];
 }
 
 <section class="mb-5">
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-            @for (var i = 0; i < Model.Banners.Count; i++)
+            @for (var i = 0; i < bannerItems.Count; i++)
             {
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@Model.Banners[i].ImagePath" class="d-block w-100" style="height:400px;object-fit:cover;" alt="@Model.Banners[i].Title" />
+                    <img src="@bannerItems[i].ImagePath" class="d-block w-100" style="height:400px;object-fit:cover;" alt="@bannerItems[i].Title" />
+                    @if (!string.IsNullOrWhiteSpace(bannerItems[i].Title))
+                    {
+                        <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                            <h5 class="mb-0">@bannerItems[i].Title</h5>
+                        </div>
+                    }
                 </div>
             }
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded"></span>
+        </button>
     </div>
 </section>
 

@@ -1,0 +1,33 @@
+@model JivanJyotiTrustApp.Models.BannerItem
+@{
+    ViewData["Title"] = "Edit Banner";
+}
+
+<h2 class="mb-3">Edit Banner</h2>
+
+<form asp-area="Admin" asp-controller="Banner" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card card-body">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input id="title" name="title" class="form-control" value="@Model.Title" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Image</label>
+        <div>
+            <img src="@Model.ImagePath" class="img-thumbnail" style="height:120px;width:220px;object-fit:cover;" alt="@Model.Title" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="image" class="form-label">Replace Image (optional)</label>
+        <input id="image" name="image" type="file" class="form-control" accept="image/*" />
+        <span class="text-danger">@Html.ValidationMessage("image")</span>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-area="Admin" asp-controller="Banner" asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
