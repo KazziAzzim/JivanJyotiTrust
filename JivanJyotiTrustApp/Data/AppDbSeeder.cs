@@ -48,29 +48,29 @@ public static class AppDbSeeder
         if (!await context.BannerItems.AnyAsync())
         {
             context.BannerItems.AddRange(
-                new BannerItem { Title = "Empower Skills", ImagePath = "/images/banner-1.svg" },
-                new BannerItem { Title = "Build Futures", ImagePath = "/images/banner-2.svg" },
-                new BannerItem { Title = "Community Learning", ImagePath = "/images/banner-3.svg" }
+                new BannerItem { Title = "Empower Skills", ImagePath = "https://via.placeholder.com/1200x400?text=Banner+1" },
+                new BannerItem { Title = "Build Futures", ImagePath = "https://via.placeholder.com/1200x400?text=Banner+2" },
+                new BannerItem { Title = "Community Learning", ImagePath = "https://via.placeholder.com/1200x400?text=Banner+3" }
             );
         }
 
         if (!await context.ClassItems.AnyAsync())
         {
             context.ClassItems.AddRange(
-                new ClassItem { Name = "Jewelry Making", ShortDescription = "Design beautiful handmade ornaments.", ImagePath = "/images/class-jewelry.svg" },
-                new ClassItem { Name = "Soap Making", ShortDescription = "Learn natural and decorative soap creation.", ImagePath = "/images/class-soap.svg" },
-                new ClassItem { Name = "Mehndi Class", ShortDescription = "Master traditional and modern mehndi styles.", ImagePath = "/images/class-mehndi.svg" },
-                new ClassItem { Name = "Art and Craft Class", ShortDescription = "Create engaging DIY art and craft projects.", ImagePath = "/images/class-art.svg" }
+                new ClassItem { Name = "Jewelry Making", ShortDescription = "Design beautiful handmade ornaments.", ImagePath = "https://via.placeholder.com/400x250?text=Jewelry+Making" },
+                new ClassItem { Name = "Soap Making", ShortDescription = "Learn natural and decorative soap creation.", ImagePath = "https://via.placeholder.com/400x250?text=Soap+Making" },
+                new ClassItem { Name = "Mehndi Class", ShortDescription = "Master traditional and modern mehndi styles.", ImagePath = "https://via.placeholder.com/400x250?text=Mehndi+Class" },
+                new ClassItem { Name = "Art and Craft Class", ShortDescription = "Create engaging DIY art and craft projects.", ImagePath = "https://via.placeholder.com/400x250?text=Art+and+Craft" }
             );
         }
 
         if (!await context.GalleryItems.AnyAsync())
         {
             context.GalleryItems.AddRange(
-                new GalleryItem { Title = "Workshop 1", ImagePath = "/images/gallery-1.svg" },
-                new GalleryItem { Title = "Workshop 2", ImagePath = "/images/gallery-2.svg" },
-                new GalleryItem { Title = "Workshop 3", ImagePath = "/images/gallery-3.svg" },
-                new GalleryItem { Title = "Workshop 4", ImagePath = "/images/gallery-4.svg" }
+                new GalleryItem { Title = "Workshop 1", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+1" },
+                new GalleryItem { Title = "Workshop 2", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+2" },
+                new GalleryItem { Title = "Workshop 3", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+3" },
+                new GalleryItem { Title = "Workshop 4", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+4" }
             );
         }
 
