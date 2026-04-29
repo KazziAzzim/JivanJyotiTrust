@@ -1,0 +1,38 @@
+@model JivanJyotiTrustApp.Models.ClassItem
+@{
+    ViewData["Title"] = "Edit Class";
+}
+
+<h2 class="mb-3">Edit Class</h2>
+
+<form asp-area="Admin" asp-controller="Class" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card card-body">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+        <input id="name" name="name" class="form-control" value="@Model.Name" />
+        <span class="text-danger">@Html.ValidationMessage("name")</span>
+    </div>
+
+    <div class="mb-3">
+        <label for="shortDescription" class="form-label">Description <span class="text-danger">*</span></label>
+        <textarea id="shortDescription" name="shortDescription" rows="4" class="form-control">@Model.ShortDescription</textarea>
+        <span class="text-danger">@Html.ValidationMessage("shortDescription")</span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Image</label>
+        <div><img src="@Model.ImagePath" class="img-thumbnail" style="height:120px;width:200px;object-fit:cover;" alt="@Model.Name" /></div>
+    </div>
+
+    <div class="mb-3">
+        <label for="image" class="form-label">Replace Image (optional)</label>
+        <input id="image" name="image" type="file" class="form-control" accept="image/*" />
+        <span class="text-danger">@Html.ValidationMessage("image")</span>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-area="Admin" asp-controller="Class" asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

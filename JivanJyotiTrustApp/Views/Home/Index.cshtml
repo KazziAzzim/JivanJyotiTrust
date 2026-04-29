@@ -1,10 +1,11 @@
 @model HomeViewModel
 @{
     ViewData["Title"] = "Home";
-    var classGroups = Model.Classes.Select((item, index) => new { item, index })
-        .GroupBy(x => x.index / 3)
-        .Select(g => g.Select(x => x.item).ToList())
-        .ToList();
+    var classes = Model.Classes;
+    var hasClasses = classes.Any();
+    var classGroups = hasClasses
+        ? classes.Select((item, index) => new { item, index }).GroupBy(x => x.index / 3).Select(g => g.Select(x => x.item).ToList()).ToList()
+        : new List<List<ClassItem>>();
     var bannerItems = Model.Banners.Any()
         ? Model.Banners
         : [new BannerItem { Title = "Jivan Jyoti Trust", ImagePath = "/images/banners/placeholder-banner.svg" }];
@@ -37,35 +38,55 @@
 
 <section class="mb-5">
     <h2 class="mb-3">Classes</h2>
-    <div id="classesCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            @for (var i = 0; i < classGroups.Count; i++)
-            {
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <div class="row">
-                        @foreach (var classItem in classGroups[i])
-                        {
-                            <div class="col-md-4 mb-3">
-                                <div class="card h-100">
-                                    <img src="@classItem.ImagePath" class="card-img-top" style="height:220px;object-fit:cover;" alt="@classItem.Name" />
-                                    <div class="card-body">
-                                        <h5>@classItem.Name</h5>
-                                        <p class="mb-0">@classItem.ShortDescription</p>
+    @if (hasClasses)
+    {
+        <div id="classesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (var i = 0; i < classGroups.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="row g-3">
+                            @foreach (var classItem in classGroups[i])
+                            {
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <img src="@classItem.ImagePath" class="card-img-top" style="height:220px;object-fit:cover;" alt="@classItem.Name" />
+                                        <div class="card-body">
+                                            <h5>@classItem.Name</h5>
+                                            <p class="mb-0">@(classItem.ShortDescription.Length > 100 ? classItem.ShortDescription[..100] + "..." : classItem.ShortDescription)</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#classesCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-dark rounded"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#classesCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-dark rounded"></span>
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @for (var i = 1; i <= 3; i++)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img src="/images/class-art.svg" class="card-img-top" style="height:220px;object-fit:cover;" alt="Placeholder class @i" />
+                        <div class="card-body">
+                            <h5>Upcoming Class @i</h5>
+                            <p class="mb-0">Class details will be available soon. Stay tuned for updates.</p>
+                        </div>
                     </div>
                 </div>
             }
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#classesCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark rounded"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#classesCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon bg-dark rounded"></span>
-        </button>
-    </div>
+    }
 </section>
 
 <section class="mb-4">
