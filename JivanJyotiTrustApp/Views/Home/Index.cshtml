@@ -11,7 +11,7 @@
         : [new BannerItem { Title = "Jivan Jyoti Trust", ImagePath = "/images/banners/placeholder-banner.svg" }];
 }
 
-<section class="mb-5">
+<section id="about" class="mb-5">
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             @for (var i = 0; i < bannerItems.Count; i++)
@@ -36,7 +36,7 @@
     </div>
 </section>
 
-<section class="mb-5">
+<section id="classes" class="mb-5">
     <h2 class="mb-3">Classes</h2>
     @if (hasClasses)
     {
@@ -89,7 +89,7 @@
     }
 </section>
 
-<section class="mb-4">
+<section id="gallery" class="mb-4">
     <h2 class="mb-3">Gallery</h2>
     <div class="row g-3">
         @foreach (var item in Model.Gallery)
