@@ -18,7 +18,7 @@
             <a class="nav-link text-white @(controller == "Dashboard" ? "bg-primary rounded" : "")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
             <a class="nav-link text-white @(controller == "Classes" ? "bg-primary rounded" : "")" asp-area="Admin" asp-controller="Classes" asp-action="Index">Classes</a>
             <a class="nav-link text-white @(controller == "Gallery" ? "bg-primary rounded" : "")" asp-area="Admin" asp-controller="Gallery" asp-action="Index">Gallery</a>
-            <a class="nav-link text-white @(controller == "Banners" ? "bg-primary rounded" : "")" asp-area="Admin" asp-controller="Banners" asp-action="Index">Banners</a>
+            <a class="nav-link text-white @(controller == "Banner" ? "bg-primary rounded" : "")" asp-area="Admin" asp-controller="Banner" asp-action="Index">Banners</a>
             <form asp-area="Admin" asp-controller="Account" asp-action="Logout" method="post" class="mt-3">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-outline-light w-100">Logout</button>

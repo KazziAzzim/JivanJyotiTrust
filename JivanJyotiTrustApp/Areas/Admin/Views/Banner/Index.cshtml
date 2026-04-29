@@ -1,0 +1,60 @@
+@model List<JivanJyotiTrustApp.Models.BannerItem>
+@{
+    ViewData["Title"] = "Banners";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Banners</h2>
+    <a asp-area="Admin" asp-controller="Banner" asp-action="Create" class="btn btn-primary">Create New Banner</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:120px;">Image Preview</th>
+                        <th>Title</th>
+                        <th style="width:220px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-4">No banners found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var banner in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@banner.ImagePath" class="img-thumbnail" style="height:60px;width:100px;object-fit:cover;" alt="@banner.Title" />
+                                </td>
+                                <td>@(string.IsNullOrWhiteSpace(banner.Title) ? "-" : banner.Title)</td>
+                                <td>
+                                    <a asp-area="Admin" asp-controller="Banner" asp-action="Edit" asp-route-id="@banner.Id" class="btn btn-sm btn-warning me-2">Edit</a>
+                                    <form asp-area="Admin" asp-controller="Banner" asp-action="Delete" asp-route-id="@banner.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this banner?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
