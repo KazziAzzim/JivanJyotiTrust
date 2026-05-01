@@ -64,16 +64,6 @@ public static class AppDbSeeder
             );
         }
 
-        if (!await context.GalleryItems.AnyAsync())
-        {
-            context.GalleryItems.AddRange(
-                new GalleryItem { Title = "Workshop 1", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+1" },
-                new GalleryItem { Title = "Workshop 2", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+2" },
-                new GalleryItem { Title = "Workshop 3", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+3" },
-                new GalleryItem { Title = "Workshop 4", ImagePath = "https://via.placeholder.com/300x200?text=Gallery+4" }
-            );
-        }
-
         await context.SaveChangesAsync();
     }
 }
