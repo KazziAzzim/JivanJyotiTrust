@@ -13,6 +13,14 @@
         </div>
     </div>
 </section>
+
+<section id="classes" class="mb-4">
+    <h2 class="mb-3">Classes</h2>
+    <div class="swiper classes-swiper">
+        <div class="swiper-wrapper" id="classesSwiperWrapper"></div>
+    </div>
+</section>
+
 <section id="gallery" class="mb-4">
     <h2 class="mb-3">Training Gallery</h2>
     <div id="trainingGalleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
@@ -22,9 +30,35 @@
     </div>
     <div class="text-center mt-3"><button class="btn btn-outline-primary">View More</button></div>
 </section>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 $(function(){
+
+$.get('/api/classes/random', function(data){
+const wrapper = $('#classesSwiperWrapper');
+if(!data.length){
+  wrapper.html("<div class='swiper-slide'><p>No classes available.</p></div>");
+  return;
+}
+let html='';
+data.forEach(x=>{
+  html += `<div class='swiper-slide'><div class='card border-0 shadow-sm'><img src='${x.imageUrl}' class='card-img-top' style='height:220px;object-fit:cover;' /><div class='card-body'><h5 class='card-title mb-0'>${x.title}</h5></div></div></div>`;
+});
+wrapper.html(html);
+new Swiper('.classes-swiper', {
+  loop: true,
+  autoplay: {
+    delay: 3000,
+    disableOnInteraction: false
+  },
+  speed: 800,
+  slidesPerView: 3,
+  spaceBetween: 20
+});
+});
+
 $.get('/api/gallery/random', function(data){
 const groups=[]; for(let i=0;i<data.length;i+=3){groups.push(data.slice(i,i+3));}
 if(!groups.length){$('#trainingGalleryInner').html("<div class='carousel-item active'><p>No images yet.</p></div>"); return;}
