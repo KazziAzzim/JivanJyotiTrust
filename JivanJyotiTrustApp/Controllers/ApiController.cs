@@ -34,4 +34,7 @@ public class ApiController : ControllerBase
 
     [HttpGet("/api/gallery/random")]
     public async Task<IActionResult> RandomGallery() => Ok(await _context.GalleryItems.Include(x => x.Training).OrderBy(x => Guid.NewGuid()).Take(10).Select(x => new { x.Id, x.ImageUrl, trainingId = x.TrainingId, location = x.Training!.Location }).ToListAsync());
+
+    [HttpGet("/api/classes/random")]
+    public async Task<IActionResult> RandomClasses() => Ok(await _context.ClassItems.AsNoTracking().OrderBy(x => Guid.NewGuid()).Take(10).Select(x => new { x.Id, title = x.Name, imageUrl = x.ImagePath }).ToListAsync());
 }

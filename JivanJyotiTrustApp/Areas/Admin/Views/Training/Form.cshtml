@@ -7,6 +7,7 @@
 <div class="mb-3"><label class="form-label">City</label><select id="CityId" name="CityId" class="form-select" required>
 @if(Model.CityId.HasValue){ var c = Model.CityOptions.FirstOrDefault(x=>x.Id==Model.CityId); if(c is not null){<option value="@c.Id" selected>@c.Name</option>}}
 </select></div>
+<div class="mb-3"><label class="form-label">Title</label><input class="form-control" asp-for="Title" /></div>
 <div class="mb-3"><label class="form-label">Location</label><input class="form-control" asp-for="Location" /></div>
 <div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" rows="4" asp-for="Description"></textarea></div>
 <div class="mb-3"><label class="form-label">Images</label><input id="images" class="form-control" type="file" name="Images" multiple accept="image/*" /><div id="preview" class="row g-2 mt-2"></div></div>
@@ -20,6 +21,25 @@
 $(function(){
 $('#CityId').select2({tags:true,ajax:{url:'/api/cities',dataType:'json',delay:250,data:p=>({q:p.term}),processResults:data=>({results:data})},createTag:p=>p.term?{id:p.term,text:"+ Add New '"+p.term+"'",newTag:true}:null});
 $('#CityId').on('select2:select', function(e){var d=e.params.data;if(d.newTag){$.ajax({url:'/api/cities',method:'POST',contentType:'application/json',data:JSON.stringify({name:d.id})}).done(function(r){var opt=new Option(r.text,r.id,true,true);$('#CityId').empty().append(opt).trigger('change');});}});
-$('#images').on('change', function(){ $('#preview').empty(); Array.from(this.files).forEach(f=>{const r=new FileReader(); r.onload=e=>$('#preview').append(`<div class='col-3'><img src='${e.target.result}' class='img-fluid rounded' /></div>`); r.readAsDataURL(f);});});
+$('#images').on('change', function(){
+const dt = new DataTransfer();
+$('#preview').empty();
+Array.from(this.files).forEach((f,index)=>{
+  dt.items.add(f);
+  const r=new FileReader();
+  r.onload=e=>$('#preview').append(`<div class='col-3 preview-item' data-index='${index}'><div class='position-relative'><img src='${e.target.result}' class='img-fluid rounded' /><button type='button' class='btn btn-sm btn-danger position-absolute top-0 end-0 remove-preview-image' style='line-height:1;padding:0.1rem 0.35rem;'>X</button></div></div>`);
+  r.readAsDataURL(f);
+});
+this.files = dt.files;
+});
+
+$('#preview').on('click', '.remove-preview-image', function(){
+const removeIndex = Number($(this).closest('.preview-item').data('index'));
+const fileInput = $('#images')[0];
+const dt = new DataTransfer();
+Array.from(fileInput.files).forEach((f,index)=>{ if(index !== removeIndex){ dt.items.add(f); } });
+fileInput.files = dt.files;
+$('#images').trigger('change');
+});
 });
 </script>
