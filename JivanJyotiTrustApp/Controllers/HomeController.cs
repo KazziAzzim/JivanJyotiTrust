@@ -19,8 +19,7 @@ public class HomeController : Controller
         var model = new HomeViewModel
         {
             Banners = await _context.BannerItems.AsNoTracking().ToListAsync(),
-            Classes = await _context.ClassItems.AsNoTracking().ToListAsync(),
-            Gallery = await _context.GalleryItems.AsNoTracking().ToListAsync()
+            Classes = await _context.ClassItems.AsNoTracking().ToListAsync()
         };
 
         return View(model);
