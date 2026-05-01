@@ -6,9 +6,11 @@ public class GalleryItem
 {
     public int Id { get; set; }
 
-    [StringLength(120)]
-    public string? Title { get; set; }
+    [Required]
+    public int TrainingId { get; set; }
 
     [Required]
-    public string ImagePath { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
+
+    public Training? Training { get; set; }
 }
