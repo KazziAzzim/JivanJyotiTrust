@@ -23,10 +23,8 @@
 
 <section id="gallery" class="mb-4">
     <h2 class="mb-3">Training Gallery</h2>
-    <div id="trainingGalleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
-        <div class="carousel-inner" id="trainingGalleryInner"></div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#trainingGalleryCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon bg-dark rounded"></span></button>
-        <button class="carousel-control-next" type="button" data-bs-target="#trainingGalleryCarousel" data-bs-slide="next"><span class="carousel-control-next-icon bg-dark rounded"></span></button>
+    <div class="swiper training-swiper">
+        <div class="swiper-wrapper" id="trainingGalleryInner"></div>
     </div>
     <div class="text-center mt-3"><button class="btn btn-outline-primary">View More</button></div>
 </section>
@@ -60,10 +58,26 @@ new Swiper('.classes-swiper', {
 });
 
 $.get('/api/gallery/random', function(data){
-const groups=[]; for(let i=0;i<data.length;i+=3){groups.push(data.slice(i,i+3));}
-if(!groups.length){$('#trainingGalleryInner').html("<div class='carousel-item active'><p>No images yet.</p></div>"); return;}
-let html=''; groups.forEach((g,i)=>{html+=`<div class='carousel-item ${i===0?'active':''}'><div class='row g-3'>`; g.forEach(x=>{html+=`<div class='col-md-4'><img src='${x.imageUrl}' class='img-fluid rounded shadow-sm' style='height:220px;width:100%;object-fit:cover;' /></div>`}); html+='</div></div>';});
-$('#trainingGalleryInner').html(html);
+const wrapper = $('#trainingGalleryInner');
+if(!data.length){
+  wrapper.html("<div class='swiper-slide'><p>No images yet.</p></div>");
+  return;
+}
+let html='';
+data.forEach(x=>{
+  html += `<div class='swiper-slide'><img src='${x.imageUrl}' class='img-fluid rounded shadow-sm' style='height:220px;width:100%;object-fit:cover;' /></div>`;
+});
+wrapper.html(html);
+new Swiper('.training-swiper', {
+  loop: true,
+  autoplay: {
+    delay: 3000,
+    disableOnInteraction: false
+  },
+  speed: 800,
+  slidesPerView: 3,
+  spaceBetween: 20
+});
 });
 });
 </script>
