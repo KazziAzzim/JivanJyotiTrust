@@ -1,0 +1,30 @@
+@model IEnumerable<JivanJyotiTrustApp.Models.Content>
+@{
+    ViewData["Title"] = "Content";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Manage Content</h5>
+    <a asp-action="Create" class="btn btn-primary">Add Content</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr><th>Title</th><th>SectionKey</th><th>Created At</th><th>Files</th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Title</td>
+            <td>@item.SectionKey</td>
+            <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@item.ContentFiles.Count</td>
+            <td class="text-end">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
