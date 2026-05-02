@@ -8,34 +8,106 @@
         .OrderByDescending(x => x.CreatedAt)
         .AsNoTracking()
         .ToListAsync();
+
+    var isAboutSection = string.Equals(Model, "About", StringComparison.OrdinalIgnoreCase);
 }
 
 @if (entries.Any())
 {
-    <section class="mb-4">
+    <section class="dynamic-content-section @(isAboutSection ? "about-content-enhanced" : string.Empty) mb-4">
+        @if (isAboutSection)
+        {
+            <div class="about-header text-center mb-4 fade-in-up">
+                <span class="about-subtitle text-uppercase">Who We Are</span>
+                <h2 class="about-title mt-2 mb-2">About Our Trust</h2>
+                <p class="about-lead text-muted mb-0">Dedicated to empowering lives through education, skill development, and compassionate community support.</p>
+            </div>
+        }
+
         @foreach (var entry in entries)
         {
-            <div class="mb-3">
-                <h3>@entry.Title</h3>
-                <p>@entry.Description</p>
+            <article class="content-entry-card card border-0 shadow-sm mb-4 fade-in-up">
+                <div class="card-body p-4 p-md-5">
+                    <h3 class="content-entry-title mb-3">@entry.Title</h3>
 
-                @if (entry.ContentFiles.Any())
-                {
-                    <div class="mt-3">
-                        <h5>Download Documents</h5>
-                        <p class="text-muted">For more detailed information, please download the documents provided below.</p>
-                        <ul class="list-group">
-                            @foreach (var file in entry.ContentFiles)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>@file.FileName</span>
-                                    <a class="btn btn-sm btn-outline-primary" href="/Content/Download/@file.Id">Download</a>
-                                </li>
-                            }
-                        </ul>
+                    <div class="content-entry-description">
+                        @Html.Raw(entry.Description)
                     </div>
-                }
-            </div>
+
+                    @if (isAboutSection)
+                    {
+                        <div class="row g-3 mt-3 key-points">
+                            <div class="col-md-4"><div class="feature-pill"><i class="bi bi-check-circle-fill"></i><span>Community First Approach</span></div></div>
+                            <div class="col-md-4"><div class="feature-pill"><i class="bi bi-award-fill"></i><span>Skill & Education Focus</span></div></div>
+                            <div class="col-md-4"><div class="feature-pill"><i class="bi bi-people-fill"></i><span>Inclusive Growth Mission</span></div></div>
+                        </div>
+                    }
+
+                    @if (entry.ContentFiles.Any())
+                    {
+                        <div class="downloads-wrap mt-4">
+                            <h5 class="mb-2">Download Documents</h5>
+                            <p class="text-muted mb-3">For detailed information, please download the resources below.</p>
+                            <div class="d-flex flex-column gap-2">
+                                @foreach (var file in entry.ContentFiles)
+                                {
+                                    <div class="download-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                        <span><i class="bi bi-file-earmark-text me-2 text-primary"></i>@file.FileName</span>
+                                        <a class="btn btn-sm btn-primary" href="/Content/Download/@file.Id"><i class="bi bi-download me-1"></i>Download</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </article>
         }
     </section>
 }
+
+<style>
+    .about-content-enhanced {
+        background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+
+    .about-subtitle { letter-spacing: 0.08em; font-weight: 600; color: #2f8f63; font-size: .8rem; }
+    .about-title { font-weight: 700; color: #0f4c81; }
+
+    .content-entry-card { border-radius: 1rem; }
+    .content-entry-title { color: #1d2b3a; font-weight: 650; }
+
+    .content-entry-description p { margin-bottom: 1rem; line-height: 1.7; }
+    .content-entry-description ul, .content-entry-description ol { padding-left: 1.25rem; margin-bottom: 1rem; }
+    .content-entry-description li { margin-bottom: .35rem; }
+
+    .feature-pill {
+        background: #f4f9ff;
+        border: 1px solid #e2edf8;
+        border-radius: .8rem;
+        padding: .7rem .9rem;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-weight: 500;
+    }
+
+    .feature-pill i { color: #2f8f63; }
+
+    .download-item {
+        background: #f8fafc;
+        border: 1px solid #e7edf4;
+        border-radius: .65rem;
+        padding: .65rem .8rem;
+    }
+
+    .fade-in-up {
+        animation: fadeInUp .6s ease both;
+    }
+
+    @@keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
