@@ -15,6 +15,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<BannerItem> BannerItems => Set<BannerItem>();
     public DbSet<City> Cities => Set<City>();
     public DbSet<Training> Trainings => Set<Training>();
+    public DbSet<Content> Contents => Set<Content>();
+    public DbSet<ContentFile> ContentFiles => Set<ContentFile>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -34,6 +36,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(x => x.Training)
             .WithMany(x => x.GalleryItems)
             .HasForeignKey(x => x.TrainingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ContentFile>()
+            .HasOne(x => x.Content)
+            .WithMany(x => x.ContentFiles)
+            .HasForeignKey(x => x.ContentId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
