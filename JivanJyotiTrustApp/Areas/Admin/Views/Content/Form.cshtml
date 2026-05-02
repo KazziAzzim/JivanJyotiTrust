@@ -17,7 +17,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+        <textarea asp-for="Description" class="form-control rich-editor" rows="8"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
@@ -48,3 +48,22 @@
     </div>
 </form>
 <partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editorElement = document.querySelector('.rich-editor');
+        if (!editorElement) return;
+
+        ClassicEditor
+            .create(editorElement, {
+                toolbar: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'link', '|',
+                    'undo', 'redo'
+                ]
+            })
+            .catch(error => console.error(error));
+    });
+</script>
