@@ -33,6 +33,82 @@
     </div>
     <div class="text-center mt-3"><button class="btn btn-outline-primary">View More</button></div>
 </section>
+
+<section id="impact-stats" class="impact-stats-section mt-5">
+    <div class="impact-stats-overlay rounded-4 p-4 p-lg-5">
+        <div class="text-center mb-4 mb-lg-5">
+            <h2 class="fw-bold mb-2">Our Impact in Numbers</h2>
+            <p class="text-muted mb-0">Every training brings hope, skill, and opportunity to the community.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="impact-card text-center h-100">
+                    <div class="impact-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                    <div class="impact-count" data-target="1500">0</div>
+                    <p class="impact-label mb-0">Students Trained</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="impact-card text-center h-100">
+                    <div class="impact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div class="impact-count" data-target="25">0</div>
+                    <p class="impact-label mb-0">Number of Places Trainings Provided</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="impact-card text-center h-100">
+                    <div class="impact-icon"><i class="bi bi-easel2-fill"></i></div>
+                    <div class="impact-count" data-target="300">0</div>
+                    <p class="impact-label mb-0">Total Trainings Conducted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .impact-stats-section {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(15, 76, 129, 0.06) 100%);
+    }
+
+    .impact-stats-overlay {
+        background: linear-gradient(135deg, #ffffff 0%, #f6fbff 55%, #eef7f4 100%);
+        box-shadow: 0 20px 40px rgba(15, 76, 129, 0.12);
+    }
+
+    .impact-card {
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 2rem 1.25rem;
+        box-shadow: 0 12px 24px rgba(17, 61, 99, 0.12);
+        border: 1px solid rgba(15, 76, 129, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .impact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 30px rgba(17, 61, 99, 0.16);
+    }
+
+    .impact-icon {
+        font-size: 2rem;
+        color: #0f4c81;
+        margin-bottom: 0.85rem;
+    }
+
+    .impact-count {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        color: #1d2b3a;
+        line-height: 1.1;
+        margin-bottom: 0.5rem;
+    }
+
+    .impact-label {
+        color: #5c6f82;
+        font-weight: 500;
+    }
+</style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -84,5 +160,54 @@ new Swiper('.training-swiper', {
   spaceBetween: 20
 });
 });
+
+const impactSection = document.querySelector('#impact-stats');
+const impactCounts = document.querySelectorAll('.impact-count');
+let hasAnimatedImpactStats = false;
+
+function animateImpactCounter(counterElement, duration) {
+  const targetValue = Number(counterElement.dataset.target || 0);
+  const startTime = performance.now();
+
+  function updateCounter(currentTime) {
+    const progress = Math.min((currentTime - startTime) / duration, 1);
+    const currentValue = Math.floor(progress * targetValue);
+    counterElement.textContent = currentValue.toLocaleString();
+
+    if (progress < 1) {
+      requestAnimationFrame(updateCounter);
+    } else {
+      counterElement.textContent = targetValue.toLocaleString();
+    }
+  }
+
+  requestAnimationFrame(updateCounter);
+}
+
+function runImpactCounterAnimation() {
+  if (hasAnimatedImpactStats) {
+    return;
+  }
+
+  hasAnimatedImpactStats = true;
+  impactCounts.forEach((counter) => animateImpactCounter(counter, 1800));
+}
+
+if (impactSection && impactCounts.length) {
+  if ('IntersectionObserver' in window) {
+    const impactObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          runImpactCounterAnimation();
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    impactObserver.observe(impactSection);
+  } else {
+    runImpactCounterAnimation();
+  }
+}
 });
 </script>
