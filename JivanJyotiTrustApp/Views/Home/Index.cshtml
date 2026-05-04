@@ -31,15 +31,29 @@
         <div class="row g-4">
             <div class="col-12 col-lg-6">
                 <article class="mission-vision-card h-100">
-                    <div class="mission-vision-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></div>
-                    <h3 class="h4 mb-3">Mission</h3>
+
+                    @*                     <div class="mission-vision-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></div>
+                    <h3 class="h4 mb-3">Mission</h3> *@
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mission-vision-icon me-3 d-flex align-items-center justify-content-center" aria-hidden="true">
+                            <i class="bi bi-bullseye"></i>
+                        </div>
+                        <h3 class="h4 mb-0 d-flex align-items-center">Mission</h3>
+                    </div>
+
                     <p class="mb-0">To empower women and underprivileged communities by providing skill-based training, education, and entrepreneurship opportunities. The trust is committed to enhancing self-reliance through practical learning in areas such as jewelry making, handicrafts, beauty services, and other vocational skills, while also supporting basic needs, education, and the well-being of elderly individuals.</p>
                 </article>
             </div>
             <div class="col-12 col-lg-6">
                 <article class="mission-vision-card h-100">
-                    <div class="mission-vision-icon" aria-hidden="true"><i class="bi bi-lightbulb"></i></div>
-                    <h3 class="h4 mb-3">Vision</h3>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mission-vision-icon me-3 d-flex align-items-center justify-content-center" aria-hidden="true">
+                            <i class="bi bi-lightbulb"></i>
+                        </div>
+                        <h3 class="h4 mb-0 d-flex align-items-center">Vision</h3>
+                    </div>
+
                     <p class="mb-0">To create a self-sustained and inclusive society where every individual—especially women and economically weaker sections—has the skills, confidence, and opportunities to lead an independent and dignified life. The trust envisions expanding its impact across India by collaborating with government bodies, corporates, and institutions to build platforms where skilled individuals can showcase and sell their products globally.</p>
                 </article>
             </div>
@@ -107,10 +121,10 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .mission-vision-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 34px rgba(17, 61, 99, 0.16);
-    }
+        .mission-vision-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 34px rgba(17, 61, 99, 0.16);
+        }
 
     .mission-vision-icon {
         width: 3rem;
@@ -143,10 +157,10 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .impact-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 30px rgba(17, 61, 99, 0.16);
-    }
+        .impact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 30px rgba(17, 61, 99, 0.16);
+        }
 
     .impact-icon {
         font-size: 2rem;
@@ -171,114 +185,114 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-$(function(){
+    $(function () {
 
 
-$('.trust-nav .nav-link[href^="#"]').on('click', function (event) {
-  const targetId = $(this).attr('href');
-  if (!targetId || targetId === '#') return;
-  const $target = $(targetId);
-  if (!$target.length) return;
+    $('.trust-nav .nav-link[href^="#"]').on('click', function (event) {
+    const targetId = $(this).attr('href');
+    if (!targetId || targetId === '#') return;
+    const $target = $(targetId);
+    if (!$target.length) return;
 
-  event.preventDefault();
-  $('html, body').animate({
+    event.preventDefault();
+    $('html, body').animate({
     scrollTop: $target.offset().top - 90
-  }, 500);
-});
+    }, 500);
+    });
 
-$.get('/api/classes/random', function(data){
-const wrapper = $('#classesSwiperWrapper');
-if(!data.length){
-  wrapper.html("<div class='swiper-slide'><p>No classes available.</p></div>");
-  return;
-}
-let html='';
-data.forEach(x=>{
-  html += `<div class='swiper-slide'><div class='card border-0 shadow-sm'><img src='${x.imageUrl}' class='card-img-top' style='height:220px;object-fit:cover;' /><div class='card-body'><h5 class='card-title mb-0'>${x.title}</h5></div></div></div>`;
-});
-wrapper.html(html);
-new Swiper('.classes-swiper', {
-  loop: true,
-  autoplay: {
+    $.get('/api/classes/random', function (data) {
+    const wrapper = $('#classesSwiperWrapper');
+    if (!data.length) {
+    wrapper.html("<div class='swiper-slide'><p>No classes available.</p></div>");
+    return;
+    }
+    let html = '';
+    data.forEach(x => {
+    html += `<div class='swiper-slide'><div class='card border-0 shadow-sm'><img src='${x.imageUrl}' class='card-img-top' style='height:220px;object-fit:cover;' /><div class='card-body'><h5 class='card-title mb-0'>${x.title}</h5></div></div></div>`;
+    });
+    wrapper.html(html);
+    new Swiper('.classes-swiper', {
+    loop: true,
+    autoplay: {
     delay: 3000,
     disableOnInteraction: false
-  },
-  speed: 800,
-  slidesPerView: 3,
-  spaceBetween: 20
-});
-});
+    },
+    speed: 800,
+    slidesPerView: 3,
+    spaceBetween: 20
+    });
+    });
 
-$.get('/api/gallery/random', function(data){
-const wrapper = $('#trainingGalleryInner');
-if(!data.length){
-  wrapper.html("<div class='swiper-slide'><p>No images yet.</p></div>");
-  return;
-}
-let html='';
-data.forEach(x=>{
-  html += `<div class='swiper-slide'><img src='${x.imageUrl}' class='img-fluid rounded shadow-sm' style='height:220px;width:100%;object-fit:cover;' /></div>`;
-});
-wrapper.html(html);
-new Swiper('.training-swiper', {
-  loop: true,
-  autoplay: {
+    $.get('/api/gallery/random', function (data) {
+    const wrapper = $('#trainingGalleryInner');
+    if (!data.length) {
+    wrapper.html("<div class='swiper-slide'><p>No images yet.</p></div>");
+    return;
+    }
+    let html = '';
+    data.forEach(x => {
+    html += `<div class='swiper-slide'><img src='${x.imageUrl}' class='img-fluid rounded shadow-sm' style='height:220px;width:100%;object-fit:cover;' /></div>`;
+    });
+    wrapper.html(html);
+    new Swiper('.training-swiper', {
+    loop: true,
+    autoplay: {
     delay: 3000,
     disableOnInteraction: false
-  },
-  speed: 800,
-  slidesPerView: 3,
-  spaceBetween: 20
-});
-});
+    },
+    speed: 800,
+    slidesPerView: 3,
+    spaceBetween: 20
+    });
+    });
 
-const impactSection = document.querySelector('#impact-stats');
-const impactCounts = document.querySelectorAll('.impact-count');
-let hasAnimatedImpactStats = false;
+    const impactSection = document.querySelector('#impact-stats');
+    const impactCounts = document.querySelectorAll('.impact-count');
+    let hasAnimatedImpactStats = false;
 
-function animateImpactCounter(counterElement, duration) {
-  const targetValue = Number(counterElement.dataset.target || 0);
-  const startTime = performance.now();
+    function animateImpactCounter(counterElement, duration) {
+    const targetValue = Number(counterElement.dataset.target || 0);
+    const startTime = performance.now();
 
-  function updateCounter(currentTime) {
+    function updateCounter(currentTime) {
     const progress = Math.min((currentTime - startTime) / duration, 1);
     const currentValue = Math.floor(progress * targetValue);
     counterElement.textContent = currentValue.toLocaleString();
 
     if (progress < 1) {
-      requestAnimationFrame(updateCounter);
+    requestAnimationFrame(updateCounter);
     } else {
-      counterElement.textContent = targetValue.toLocaleString();
+    counterElement.textContent = targetValue.toLocaleString();
     }
-  }
+    }
 
-  requestAnimationFrame(updateCounter);
-}
+    requestAnimationFrame(updateCounter);
+    }
 
-function runImpactCounterAnimation() {
-  if (hasAnimatedImpactStats) {
+    function runImpactCounterAnimation() {
+    if (hasAnimatedImpactStats) {
     return;
-  }
+    }
 
-  hasAnimatedImpactStats = true;
-  impactCounts.forEach((counter) => animateImpactCounter(counter, 1800));
-}
+    hasAnimatedImpactStats = true;
+    impactCounts.forEach((counter) => animateImpactCounter(counter, 1800));
+    }
 
-if (impactSection && impactCounts.length) {
-  if ('IntersectionObserver' in window) {
+    if (impactSection && impactCounts.length) {
+    if ('IntersectionObserver' in window) {
     const impactObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          runImpactCounterAnimation();
-          observer.disconnect();
-        }
-      });
+    entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+    runImpactCounterAnimation();
+    observer.disconnect();
+    }
+    });
     }, { threshold: 0.3 });
 
     impactObserver.observe(impactSection);
-  } else {
+    } else {
     runImpactCounterAnimation();
-  }
-}
-});
+    }
+    }
+    });
 </script>
