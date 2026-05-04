@@ -4,13 +4,21 @@
     var bannerItems = Model.Banners.Any() ? Model.Banners : [new BannerItem { Title = "Jivan Jyoti Trust", ImagePath = "/images/banners/placeholder-banner.svg" }];
 }
 <section id="about" class="mb-5">
-    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel" data-bs-pause="hover">
         <div class="carousel-inner">
             @for (var i = 0; i < bannerItems.Count; i++)
             {
-                <div class="carousel-item @(i == 0 ? "active" : "")"><img src="@bannerItems[i].ImagePath" class="d-block w-100" style="height:400px;object-fit:cover;" alt="@bannerItems[i].Title" /></div>
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@bannerItems[i].ImagePath" class="d-block w-100 banner-image" alt="@bannerItems[i].Title" />
+                </div>
             }
         </div>
+        <button class="carousel-control-prev slider-arrow slider-arrow-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev" aria-label="Previous banner slide">
+            <span class="slider-arrow-icon" aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+        </button>
+        <button class="carousel-control-next slider-arrow slider-arrow-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next" aria-label="Next banner slide">
+            <span class="slider-arrow-icon" aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+        </button>
     </div>
 </section>
 
@@ -19,6 +27,9 @@
     <h2 class="mb-3">Classes</h2>
     <div class="swiper classes-swiper">
         <div class="swiper-wrapper" id="classesSwiperWrapper"></div>
+        <div class="swiper-pagination classes-pagination"></div>
+        <div class="swiper-button-prev classes-prev slider-arrow"><i class="bi bi-chevron-left"></i></div>
+        <div class="swiper-button-next classes-next slider-arrow"><i class="bi bi-chevron-right"></i></div>
     </div>
 </section>
 
@@ -69,6 +80,9 @@
     <h2 class="mb-3">Training Gallery</h2>
     <div class="swiper training-swiper">
         <div class="swiper-wrapper" id="trainingGalleryInner"></div>
+        <div class="swiper-pagination training-pagination"></div>
+        <div class="swiper-button-prev training-prev slider-arrow"><i class="bi bi-chevron-left"></i></div>
+        <div class="swiper-button-next training-next slider-arrow"><i class="bi bi-chevron-right"></i></div>
     </div>
     <div class="text-center mt-3"><button class="btn btn-outline-primary">View More</button></div>
 </section>
@@ -106,6 +120,54 @@
 </section>
 
 <style>
+    body {
+        overflow-x: hidden;
+    }
+
+    .banner-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .classes-swiper,
+    .training-swiper {
+        padding: 0.5rem 2.25rem 2.5rem;
+    }
+
+    .slider-arrow {
+        width: 2.5rem;
+        height: 2.5rem;
+        background: rgba(15, 76, 129, 0.75);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .slider-arrow::after {
+        content: none;
+    }
+
+    .slider-arrow:hover {
+        background: rgba(15, 76, 129, 0.95);
+        transform: scale(1.06);
+    }
+
+    .slider-arrow i {
+        font-size: 1.1rem;
+    }
+
+    .swiper-button-prev.slider-arrow,
+    .swiper-button-next.slider-arrow {
+        top: 45%;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: #0f4c81;
+    }
 
     .mission-vision-section {
         background: linear-gradient(135deg, #f9fcff 0%, #f3faf7 100%);
@@ -180,6 +242,59 @@
         color: #5c6f82;
         font-weight: 500;
     }
+
+    @media (max-width: 991.98px) {
+        #about,
+        #classes,
+        #gallery,
+        #about-content,
+        #mission-vision,
+        #impact-stats {
+            margin-bottom: 2rem !important;
+        }
+
+        .classes-swiper,
+        .training-swiper {
+            padding-left: 1.75rem;
+            padding-right: 1.75rem;
+        }
+
+        .mission-vision-card,
+        .impact-card {
+            padding: 1.5rem 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .banner-image {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .classes-swiper,
+        .training-swiper {
+            padding: 0.5rem 1rem 2.25rem;
+        }
+
+        .slider-arrow {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .slider-arrow i {
+            font-size: 0.95rem;
+        }
+
+        .mission-vision-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1.1rem;
+        }
+    }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -213,13 +328,27 @@
     wrapper.html(html);
     new Swiper('.classes-swiper', {
     loop: true,
+    allowTouchMove: true,
     autoplay: {
     delay: 3000,
     disableOnInteraction: false
     },
+    navigation: {
+    nextEl: '.classes-next',
+    prevEl: '.classes-prev'
+    },
+    pagination: {
+    el: '.classes-pagination',
+    clickable: true
+    },
     speed: 800,
-    slidesPerView: 3,
-    spaceBetween: 20
+    slidesPerView: 1,
+    spaceBetween: 16,
+    breakpoints: {
+    576: { slidesPerView: 2, spaceBetween: 16 },
+    992: { slidesPerView: 3, spaceBetween: 20 },
+    1200: { slidesPerView: 4, spaceBetween: 24 }
+    }
     });
     });
 
@@ -236,13 +365,27 @@
     wrapper.html(html);
     new Swiper('.training-swiper', {
     loop: true,
+    allowTouchMove: true,
     autoplay: {
     delay: 3000,
     disableOnInteraction: false
     },
+    navigation: {
+    nextEl: '.training-next',
+    prevEl: '.training-prev'
+    },
+    pagination: {
+    el: '.training-pagination',
+    clickable: true
+    },
     speed: 800,
-    slidesPerView: 3,
-    spaceBetween: 20
+    slidesPerView: 1,
+    spaceBetween: 16,
+    breakpoints: {
+    576: { slidesPerView: 2, spaceBetween: 16 },
+    992: { slidesPerView: 3, spaceBetween: 20 },
+    1200: { slidesPerView: 4, spaceBetween: 24 }
+    }
     });
     });
 
