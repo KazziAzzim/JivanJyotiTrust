@@ -16,7 +16,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var studentsTrained = await _context.Trainings.AsNoTracking().SumAsync(x => x.StudentsCount);
+        var studentsTrained = await _context.Trainings.AsNoTracking().SumAsync(x => x.StudentCount);
         var totalPlaces = await _context.Trainings
             .AsNoTracking()
             .Where(x => !string.IsNullOrWhiteSpace(x.Location))

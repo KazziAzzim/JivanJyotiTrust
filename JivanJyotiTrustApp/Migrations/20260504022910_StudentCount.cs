@@ -5,13 +5,13 @@
 namespace JivanJyotiTrustApp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTrainingStudentsCount : Migration
+    public partial class StudentCount : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "StudentsCount",
+                name: "StudentCount",
                 table: "Trainings",
                 type: "int",
                 nullable: false,
@@ -22,7 +22,7 @@ namespace JivanJyotiTrustApp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "StudentsCount",
+                name: "StudentCount",
                 table: "Trainings");
         }
     }

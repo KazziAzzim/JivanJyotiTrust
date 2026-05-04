@@ -21,7 +21,7 @@ public class Training
     [StringLength(1000)]
     public string Description { get; set; } = string.Empty;
 
-    public int StudentsCount { get; set; }
+    public int StudentCount { get; set; }
 
     public City? City { get; set; }
     public ICollection<GalleryItem> GalleryItems { get; set; } = new List<GalleryItem>();
