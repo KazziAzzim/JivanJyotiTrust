@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Training> Trainings => Set<Training>();
     public DbSet<Content> Contents => Set<Content>();
     public DbSet<ContentFile> ContentFiles => Set<ContentFile>();
+    public DbSet<Setting> Settings => Set<Setting>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

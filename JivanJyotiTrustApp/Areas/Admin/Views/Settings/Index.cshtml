@@ -1,0 +1,47 @@
+@model JivanJyotiTrustApp.Areas.Admin.ViewModels.SettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success" role="alert">@message</div>
+}
+
+<form asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Phone" class="form-label">Phone Number</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="col-12 mb-3">
+            <label asp-for="Address" class="form-label">Address</label>
+            <input asp-for="Address" class="form-control" />
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Facebook" class="form-label">Facebook Link</label>
+            <input asp-for="Facebook" class="form-control" />
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Instagram" class="form-label">Instagram Link</label>
+            <input asp-for="Instagram" class="form-control" />
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Twitter" class="form-label">Twitter Link (optional)</label>
+            <input asp-for="Twitter" class="form-control" />
+        </div>
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="YouTube" class="form-label">YouTube Link (optional)</label>
+            <input asp-for="YouTube" class="form-control" />
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">Save Settings</button>
+        </div>
+    </div>
+</form>
