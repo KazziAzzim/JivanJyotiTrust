@@ -32,6 +32,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
 <script>
+$(function(){
 $(document).ready(function () {
     var $city = $('#CityId');
 
@@ -69,8 +70,10 @@ $(document).ready(function () {
                 });
             }
         });
+    } else {
+        console.warn('Select2 could not initialize: CityId element or Select2 plugin missing.');
     }
-
+});
 $('#images').on('change', function(){
 const dt = new DataTransfer();
 $('#preview').empty();
