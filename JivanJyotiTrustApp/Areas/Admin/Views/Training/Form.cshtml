@@ -1,6 +1,17 @@
 @model JivanJyotiTrustApp.Areas.Admin.ViewModels.TrainingFormViewModel
 @{ var isEdit = Model.Id.HasValue; }
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+.select2-container {
+    width: 100% !important;
+}
+
+@media (max-width: 768px) {
+    .select2-container {
+        font-size: 14px;
+    }
+}
+</style>
 <h2>@(isEdit?"Edit":"Create") Training</h2>
 <form asp-action="@(isEdit?"Edit":"Create")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card card-body">
 @Html.AntiForgeryToken()
@@ -18,12 +29,48 @@
 <div class="d-flex flex-wrap gap-2"><button class="btn btn-primary" type="submit">Save</button></div>
 </form>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
 <script>
-$(function(){
-$('#CityId').select2({tags:true,ajax:{url:'/api/cities',dataType:'json',delay:250,data:p=>({q:p.term}),processResults:data=>({results:data})},createTag:p=>p.term?{id:p.term,text:"+ Add New '"+p.term+"'",newTag:true}:null});
-$('#CityId').on('select2:select', function(e){var d=e.params.data;if(d.newTag){$.ajax({url:'/api/cities',method:'POST',contentType:'application/json',data:JSON.stringify({name:d.id})}).done(function(r){var opt=new Option(r.text,r.id,true,true);$('#CityId').empty().append(opt).trigger('change');});}});
+$(document).ready(function () {
+    var $city = $('#CityId');
+
+    if ($city.length && $.fn.select2) {
+        $city.select2({
+            placeholder: "Select or search city",
+            width: '100%',
+            dropdownAutoWidth: true,
+            tags: true,
+            ajax: {
+                url: '/api/cities',
+                dataType: 'json',
+                delay: 250,
+                data: function (p) { return { q: p.term }; },
+                processResults: function (data) { return { results: data }; }
+            },
+            createTag: function (p) {
+                return p.term ? { id: p.term, text: "+ Add New '" + p.term + "'", newTag: true } : null;
+            }
+        });
+
+        console.log('Select2 initialized');
+
+        $city.on('select2:select', function (e) {
+            var d = e.params.data;
+            if (d.newTag) {
+                $.ajax({
+                    url: '/api/cities',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ name: d.id })
+                }).done(function (r) {
+                    var opt = new Option(r.text, r.id, true, true);
+                    $city.empty().append(opt).trigger('change');
+                });
+            }
+        });
+    }
+
 $('#images').on('change', function(){
 const dt = new DataTransfer();
 $('#preview').empty();
