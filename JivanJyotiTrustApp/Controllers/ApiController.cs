@@ -39,7 +39,7 @@ public class ApiController : ControllerBase
     public async Task<IActionResult> TrainingGallery([FromQuery] int page = 1, [FromQuery] int pageSize = 9)
     {
         page = page < 1 ? 1 : page;
-        pageSize = pageSize < 1 ? 9 : pageSize;
+        pageSize = pageSize < 1 ? 8 : pageSize;
 
         var skip = (page - 1) * pageSize;
 

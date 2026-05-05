@@ -20,6 +20,7 @@
 </section>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         let page = 1;
         let isLoading = false;
@@ -42,12 +43,14 @@
         }
 
         function loadImages() {
+            console.log('loadImages called');
             if (isLoading || !hasMoreImages) return;
 
             isLoading = true;
             $('#galleryLoader').removeClass('d-none');
 
             $.get(`/api/training/gallery?page=${page}&pageSize=${pageSize}`, function (data) {
+                console.log('Data received:', data);
                 appendImageCards(data);
 
                 if (data.length < pageSize) {
@@ -55,7 +58,8 @@
                 }
 
                 page++;
-            }).fail(function () {
+            }).fail(function (error) {
+                console.error('API call failed:', error);
                 hasMoreImages = false;
             }).always(function () {
                 isLoading = false;
@@ -70,6 +74,7 @@
         });
 
         $(document).ready(function () {
+            console.log('Document ready');
             loadImages();
         });
     </script>
