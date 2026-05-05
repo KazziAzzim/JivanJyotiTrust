@@ -4,15 +4,18 @@
 <h2>@(isEdit?"Edit":"Create") Training</h2>
 <form asp-action="@(isEdit?"Edit":"Create")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card card-body">
 @Html.AntiForgeryToken()
-<div class="mb-3"><label class="form-label">City</label><select id="CityId" name="CityId" class="form-select" required>
+<div class="row g-3">
+<div class="col-12 col-md-6"><div class="mb-3 form-group"><label class="form-label">City</label><select id="CityId" name="CityId" class="form-select" required>
 @if(Model.CityId.HasValue){ var c = Model.CityOptions.FirstOrDefault(x=>x.Id==Model.CityId); if(c is not null){<option value="@c.Id" selected>@c.Name</option>}}
-</select></div>
-<div class="mb-3"><label class="form-label">Title</label><input class="form-control" asp-for="Title" /></div>
-<div class="mb-3"><label class="form-label">Location</label><input class="form-control" asp-for="Location" /></div>
-<div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" rows="4" asp-for="Description"></textarea></div>
-<div class="mb-3"><label class="form-label">Images</label><input id="images" class="form-control" type="file" name="Images" multiple accept="image/*" /><div id="preview" class="row g-2 mt-2"></div></div>
-@if(isEdit && Model.ExistingGalleryItems.Any()){<div class="mb-2"><strong>Existing Images</strong><div class="row g-2 mt-1">@foreach(var img in Model.ExistingGalleryItems){<div class="col-3"><img src="@img.ImageUrl" class="img-fluid rounded" /></div>}</div></div>}
-<button class="btn btn-primary" type="submit">Save</button>
+</select></div></div>
+<div class="col-12 col-md-6"><div class="mb-3 form-group"><label class="form-label">Title</label><input class="form-control" asp-for="Title" /></div></div>
+<div class="col-12 col-md-6"><div class="mb-3 form-group"><label class="form-label">Location</label><input class="form-control" asp-for="Location" /></div></div>
+<div class="col-12 col-md-6"><div class="mb-3 form-group"><label>Student Count</label><input type="number" name="StudentCount" class="form-control" min="0" value="@Model?.StudentCount" /></div></div>
+<div class="col-12"><div class="mb-3 form-group"><label class="form-label">Description</label><textarea class="form-control" rows="4" asp-for="Description"></textarea></div></div>
+<div class="col-12"><div class="mb-3 form-group"><label class="form-label">Images</label><input id="images" class="form-control" type="file" name="Images" multiple accept="image/*" /><div id="preview" class="row g-2 mt-2"></div></div></div>
+</div>
+@if(isEdit && Model.ExistingGalleryItems.Any()){<div class="mb-2"><strong>Existing Images</strong><div class="row g-2 mt-1">@foreach(var img in Model.ExistingGalleryItems){<div class="col-6 col-md-3"><img src="@img.ImageUrl" class="img-fluid rounded" /></div>}</div></div>}
+<div class="d-flex flex-wrap gap-2"><button class="btn btn-primary" type="submit">Save</button></div>
 </form>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -27,7 +30,7 @@ $('#preview').empty();
 Array.from(this.files).forEach((f,index)=>{
   dt.items.add(f);
   const r=new FileReader();
-  r.onload=e=>$('#preview').append(`<div class='col-3 preview-item' data-index='${index}'><div class='position-relative'><img src='${e.target.result}' class='img-fluid rounded' /><button type='button' class='btn btn-sm btn-danger position-absolute top-0 end-0 remove-preview-image' style='line-height:1;padding:0.1rem 0.35rem;'>X</button></div></div>`);
+  r.onload=e=>$('#preview').append(`<div class='col-6 col-md-3 preview-item' data-index='${index}'><div class='position-relative'><img src='${e.target.result}' class='img-fluid rounded' /><button type='button' class='btn btn-sm btn-danger position-absolute top-0 end-0 remove-preview-image' style='line-height:1;padding:0.1rem 0.35rem;'>X</button></div></div>`);
   r.readAsDataURL(f);
 });
 this.files = dt.files;

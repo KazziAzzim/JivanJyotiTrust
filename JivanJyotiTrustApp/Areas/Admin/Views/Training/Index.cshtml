@@ -1,13 +1,19 @@
 @model List<JivanJyotiTrustApp.Models.Training>
 <h2>Training List</h2>
-<a asp-action="Create" class="btn btn-primary mb-3">Create Training</a>
+<div class="d-flex flex-wrap gap-2 mb-3">
+<a asp-action="Create" class="btn btn-primary">Create Training</a>
+</div>
+<div class="table-responsive">
 <table class="table table-bordered">
-<thead><tr><th>City</th><th>Location</th><th>Description</th><th>Actions</th></tr></thead>
+<thead><tr><th>City</th><th>Location</th><th>Description</th><th>Student Count</th><th>Actions</th></tr></thead>
 <tbody>
 @foreach (var item in Model) {
-<tr><td>@item.City?.Name</td><td>@item.Location</td><td>@item.Description</td><td>
+<tr><td>@item.City?.Name</td><td>@item.Location</td><td>@item.Description</td><td>@item.StudentCount</td><td>
+<div class="d-flex flex-wrap gap-2">
 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+</div>
 </td></tr>}
 </tbody></table>
+</div>
