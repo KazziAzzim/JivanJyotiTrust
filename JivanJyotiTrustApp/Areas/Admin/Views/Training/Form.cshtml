@@ -2,34 +2,24 @@
 @{
     var isEdit = Model.Id.HasValue;
 }
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    .select2-container {
-        width: 100% !important;
-    }
-
-    @@media (max-width: 768px) {
-        .select2-container {
-            font-size: 14px;
-        }
-    }
-</style>
 <h2>@(isEdit ? "Edit" : "Create") Training</h2>
 <form asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="card card-body">
     @Html.AntiForgeryToken()
     <div class="row g-3">
         <div class="col-12 col-md-6">
             <div class="mb-3 form-group">
-                <label class="form-label">City</label><select id="CityId" name="CityId" class="form-select" required>
-                @if (Model.CityId.HasValue)
-                {
-                    var c = Model.CityOptions.FirstOrDefault(x => x.Id == Model.CityId); if (c is not null)
-                    {
-                        <option value="@c.Id" selected>@c.Name</option>
-                    }
-                }
-            </select>
-        </div>
+                <label class="form-label">City</label>
+                <div class="d-flex gap-2">
+                    <select id="CityId" name="CityId" class="form-control" required>
+                        <option value="">Select City</option>
+                        @foreach (var city in Model.CityOptions)
+                        {
+                            <option value="@city.Id" selected="@(Model.CityId == city.Id)">@city.Name</option>
+                        }
+                    </select>
+                    <button type="button" class="btn btn-primary" id="btnAddCity">+</button>
+                </div>
+            </div>
     </div>
     <div class="col-12 col-md-6"><div class="mb-3 form-group"><label class="form-label">Title</label><input class="form-control" asp-for="Title" /></div></div>
     <div class="col-12 col-md-6"><div class="mb-3 form-group"><label class="form-label">Location</label><input class="form-control" asp-for="Location" /></div></div>
@@ -46,70 +36,52 @@
 }
 <div class="d-flex flex-wrap gap-2"><button class="btn btn-primary" type="submit">Save</button></div>
 </form>
+
+<div class="modal fade" id="addCityModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add City</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newCityName" class="form-control" placeholder="Enter city name" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveCityBtn">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
 <script>
     $(function () {
-        var $city = $('#CityId');
+    $('#btnAddCity').click(function () {
+        $('#addCityModal').modal('show');
+    });
 
-        function initializeSelect2() {
-            if (!$city.length) {
-                console.warn('Select2 could not initialize: CityId element not found.');
-                return;
-            }
-
-            try {
-                $city.select2({
-                    placeholder: "Select or search city",
-                    width: '100%',
-                    dropdownAutoWidth: true,
-                    tags: true,
-                    ajax: {
-                        url: '/api/cities',
-                        dataType: 'json',
-                        delay: 250,
-                        data: function (p) { return { q: p.term }; },
-                        processResults: function (data) { return { results: data }; }
-                    },
-                    createTag: function (p) {
-                        return p.term ? { id: p.term, text: "+ Add New '" + p.term + "'", newTag: true } : null;
-                    }
-                });
-
-                console.log('Select2 initialized');
-
-                $city.on('select2:select', function (e) {
-                    var d = e.params.data;
-                    if (d.newTag) {
-                        $.ajax({
-                            url: '/api/cities',
-                            method: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify({ name: d.id })
-                        }).done(function (r) {
-                            var opt = new Option(r.text, r.id, true, true);
-                            $city.empty().append(opt).trigger('change');
-                        });
-                    }
-                });
-            } catch (err) {
-                console.error('Error initializing Select2:', err);
-            }
+    $('#saveCityBtn').click(function () {
+        var cityName = $('#newCityName').val();
+        if (!cityName || !cityName.trim()) {
+            alert("Enter city name");
+            return;
         }
 
-        if ($.fn && $.fn.select2) {
-            initializeSelect2();
-        } else {
-            // Attempt to load Select2 dynamically if it isn't available yet
-            $.getScript('https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js')
-                .done(function () {
-                    initializeSelect2();
-                })
-                .fail(function () {
-                    console.warn('Failed to load Select2 script from CDN.');
-                });
-        }
+        $.ajax({
+            url: '/api/cities',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ name: cityName.trim() }),
+            success: function (res) {
+                $('#CityId').append(new Option(res.name ?? res.text, res.id, true, true));
+                $('#addCityModal').modal('hide');
+                $('#newCityName').val('');
+            }
+        });
+    });
+
     $('#images').on('change', function () {
     const dt = new DataTransfer();
     $('#preview').empty();
