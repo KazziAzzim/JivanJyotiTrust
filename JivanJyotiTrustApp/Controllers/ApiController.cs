@@ -35,6 +35,30 @@ public class ApiController : ControllerBase
     [HttpGet("/api/gallery/random")]
     public async Task<IActionResult> RandomGallery() => Ok(await _context.GalleryItems.Include(x => x.Training).OrderBy(x => Guid.NewGuid()).Take(10).Select(x => new { x.Id, x.ImageUrl, trainingId = x.TrainingId, location = x.Training!.Location }).ToListAsync());
 
+    [HttpGet("/api/training/gallery")]
+    public async Task<IActionResult> TrainingGallery([FromQuery] int page = 1, [FromQuery] int pageSize = 9)
+    {
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 9 : pageSize;
+
+        var skip = (page - 1) * pageSize;
+
+        var items = await _context.GalleryItems
+            .AsNoTracking()
+            .Include(x => x.Training)
+            .OrderByDescending(x => x.Id)
+            .Skip(skip)
+            .Take(pageSize)
+            .Select(x => new
+            {
+                imageUrl = x.ImageUrl,
+                trainingTitle = x.Training != null ? (x.Training.Title ?? x.Training.Location) : string.Empty
+            })
+            .ToListAsync();
+
+        return Ok(items);
+    }
+
     [HttpGet("/api/classes/random")]
     public async Task<IActionResult> RandomClasses() => Ok(await _context.ClassItems.AsNoTracking().OrderBy(x => Guid.NewGuid()).Take(10).Select(x => new { x.Id, title = x.Name, imageUrl = x.ImagePath }).ToListAsync());
 }

@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Training Gallery";
+}
+
+<section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Training Gallery</h2>
+        <a asp-controller="Home" asp-action="Index" asp-fragment="gallery" class="btn btn-outline-secondary btn-sm">Back to Home</a>
+    </div>
+
+    <div class="row" id="galleryContainer">
+        <!-- images dynamically loaded -->
+    </div>
+
+    <div id="galleryLoader" class="text-center py-3 d-none">
+        <div class="spinner-border text-primary" role="status" aria-live="polite" aria-label="Loading more training images">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let page = 1;
+        let isLoading = false;
+        let hasMoreImages = true;
+        const pageSize = 9;
+
+        function appendImageCards(data) {
+            data.forEach(item => {
+                $('#galleryContainer').append(`
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="${item.imageUrl}" class="card-img-top img-fluid" alt="${item.trainingTitle || 'Training image'}" loading="lazy" />
+                            <div class="card-body py-2">
+                                <p class="card-text mb-0 small text-muted">${item.trainingTitle || 'Training session'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function loadImages() {
+            if (isLoading || !hasMoreImages) return;
+
+            isLoading = true;
+            $('#galleryLoader').removeClass('d-none');
+
+            $.get(`/api/training/gallery?page=${page}&pageSize=${pageSize}`, function (data) {
+                appendImageCards(data);
+
+                if (data.length < pageSize) {
+                    hasMoreImages = false;
+                }
+
+                page++;
+            }).fail(function () {
+                hasMoreImages = false;
+            }).always(function () {
+                isLoading = false;
+                $('#galleryLoader').addClass('d-none');
+            });
+        }
+
+        $(window).scroll(function () {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                loadImages();
+            }
+        });
+
+        $(document).ready(function () {
+            loadImages();
+        });
+    </script>
+}
