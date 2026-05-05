@@ -23,6 +23,8 @@ public class TrainingFormViewModel
     [StringLength(1000)]
     public string Description { get; set; } = string.Empty;
 
+    public int StudentCount { get; set; }
+
     public List<IFormFile> Images { get; set; } = [];
 
     public List<City> CityOptions { get; set; } = [];

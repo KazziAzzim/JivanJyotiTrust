@@ -34,7 +34,7 @@ public class TrainingController : Controller
     public async Task<IActionResult> Create(TrainingFormViewModel model)
     {
         if (!ModelState.IsValid || model.CityId is null) return View("Form", await BuildFormAsync(model));
-        var training = new Training { CityId = model.CityId.Value, Title = model.Title.Trim(), Location = model.Location.Trim(), Description = model.Description.Trim() };
+        var training = new Training { CityId = model.CityId.Value, Title = model.Title.Trim(), Location = model.Location.Trim(), Description = model.Description.Trim(), StudentCount = model.StudentCount };
         _context.Trainings.Add(training);
         await _context.SaveChangesAsync();
         await SaveImagesAsync(training.Id, model.Images);
@@ -45,7 +45,7 @@ public class TrainingController : Controller
     {
         var item = await _context.Trainings.Include(x => x.GalleryItems).FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
-        return View("Form", await BuildFormAsync(new TrainingFormViewModel { Id = item.Id, CityId = item.CityId, Title = item.Title, Location = item.Location, Description = item.Description, ExistingGalleryItems = item.GalleryItems.ToList() }));
+        return View("Form", await BuildFormAsync(new TrainingFormViewModel { Id = item.Id, CityId = item.CityId, Title = item.Title, Location = item.Location, Description = item.Description, StudentCount = item.StudentCount, ExistingGalleryItems = item.GalleryItems.ToList() }));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
@@ -54,7 +54,7 @@ public class TrainingController : Controller
         var item = await _context.Trainings.FindAsync(id);
         if (item is null) return NotFound();
         if (!ModelState.IsValid || model.CityId is null) { model.Id = id; return View("Form", await BuildFormAsync(model)); }
-        item.CityId = model.CityId.Value; item.Title = model.Title.Trim(); item.Location = model.Location.Trim(); item.Description = model.Description.Trim();
+        item.CityId = model.CityId.Value; item.Title = model.Title.Trim(); item.Location = model.Location.Trim(); item.Description = model.Description.Trim(); item.StudentCount = model.StudentCount;
         await _context.SaveChangesAsync();
         await SaveImagesAsync(item.Id, model.Images);
         return RedirectToAction(nameof(Index));
