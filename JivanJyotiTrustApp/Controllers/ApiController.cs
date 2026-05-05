@@ -25,11 +25,11 @@ public class ApiController : ControllerBase
         if (string.IsNullOrWhiteSpace(input.Name)) return BadRequest();
         var name = input.Name.Trim();
         var existing = await _context.Cities.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
-        if (existing is not null) return Ok(new { id = existing.Id, text = existing.Name });
+        if (existing is not null) return Ok(new { id = existing.Id, name = existing.Name, text = existing.Name });
         var city = new City { Name = name };
         _context.Cities.Add(city);
         await _context.SaveChangesAsync();
-        return Ok(new { id = city.Id, text = city.Name });
+        return Ok(new { id = city.Id, name = city.Name, text = city.Name });
     }
 
     [HttpGet("/api/gallery/random")]
