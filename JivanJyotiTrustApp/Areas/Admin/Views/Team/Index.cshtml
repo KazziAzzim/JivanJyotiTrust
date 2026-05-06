@@ -1,0 +1,50 @@
+@model List<JivanJyotiTrustApp.Models.TeamMember>
+@{
+    ViewData["Title"] = "Team Members";
+}
+
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
+    <h2 class="mb-0">Team Members</h2>
+    <a asp-area="Admin" asp-controller="Team" asp-action="Create" class="btn btn-primary">Add Team Member</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">@successMessage</div>
+}
+
+<div class="table-responsive">
+    <table class="table table-bordered align-middle">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Designation</th>
+                <th class="text-nowrap">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Designation</td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a asp-area="Admin" asp-controller="Team" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-area="Admin" asp-controller="Team" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-4">No team members found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

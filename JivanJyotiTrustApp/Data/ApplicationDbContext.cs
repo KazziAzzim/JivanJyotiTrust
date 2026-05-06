@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Content> Contents => Set<Content>();
     public DbSet<ContentFile> ContentFiles => Set<ContentFile>();
     public DbSet<Setting> Settings => Set<Setting>();
+    public DbSet<TeamMember> TeamMembers => Set<TeamMember>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

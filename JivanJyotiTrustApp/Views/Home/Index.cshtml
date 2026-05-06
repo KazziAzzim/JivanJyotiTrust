@@ -87,6 +87,36 @@
     <div class="text-center mt-3"><a class="btn btn-outline-primary" asp-controller="Training" asp-action="Gallery">View More</a></div>
 </section>
 
+<section id="team" class="team-section py-5 mb-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold mb-2">Our Team</h2>
+        <p class="text-muted mb-0">Meet the people guiding our mission forward.</p>
+    </div>
+
+    <div class="row g-4">
+        @if (Model.TeamMembers.Any())
+        {
+            @foreach (var member in Model.TeamMembers)
+            {
+                var initial = string.IsNullOrWhiteSpace(member.Name) ? "?" : member.Name.Trim()[0].ToString().ToUpperInvariant();
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="team-card text-center h-100">
+                        <div class="team-avatar" aria-hidden="true">@initial</div>
+                        <h5 class="mb-1">@member.Name</h5>
+                        <p class="text-muted mb-0">@member.Designation</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <p class="text-center text-muted mb-0">Team members will be available soon.</p>
+            </div>
+        }
+    </div>
+</section>
+
 <section id="impact-stats" class="impact-stats-section mt-5">
     <div class="impact-stats-overlay rounded-4 p-4 p-lg-5">
         <div class="text-center mb-4 mb-lg-5">
@@ -201,6 +231,37 @@
         background: rgba(15, 76, 129, 0.1);
     }
 
+    .team-section {
+        background: linear-gradient(135deg, #f9fcff 0%, #f4faf7 100%);
+        border-radius: 1rem;
+    }
+
+    .team-card {
+        padding: 20px;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: 0.3s;
+    }
+
+    .team-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .team-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #007bff;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
     .impact-stats-section {
         background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(15, 76, 129, 0.06) 100%);
     }
@@ -249,6 +310,7 @@
         #gallery,
         #about-content,
         #mission-vision,
+        #team,
         #impact-stats {
             margin-bottom: 2rem !important;
         }
@@ -260,6 +322,7 @@
         }
 
         .mission-vision-card,
+        .team-card,
         .impact-card {
             padding: 1.5rem 1rem;
         }
