@@ -64,6 +64,16 @@ public static class AppDbSeeder
             );
         }
 
+        if (!await context.TeamMembers.AnyAsync())
+        {
+            context.TeamMembers.AddRange(
+                new TeamMember { Name = "Samim Shaikh", Designation = "President" },
+                new TeamMember { Name = "Nazia Shaikh", Designation = "Secretary" },
+                new TeamMember { Name = "Aamir Khan", Designation = "Treasurer" },
+                new TeamMember { Name = "Rukhsar Pathan", Designation = "Program Coordinator" }
+            );
+        }
+
         await context.SaveChangesAsync();
     }
 }

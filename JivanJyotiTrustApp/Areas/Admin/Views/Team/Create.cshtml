@@ -1,0 +1,30 @@
+@model JivanJyotiTrustApp.Models.TeamMember
+@{
+    ViewData["Title"] = "Create Team Member";
+}
+
+<h2 class="mb-3">Create Team Member</h2>
+
+<form asp-area="Admin" asp-controller="Team" asp-action="Create" method="post" class="card card-body">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Name" class="form-label">Name <span class="text-danger">*</span></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 col-md-6 mb-3">
+            <label asp-for="Designation" class="form-label">Designation <span class="text-danger">*</span></label>
+            <input asp-for="Designation" class="form-control" />
+            <span asp-validation-for="Designation" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column flex-sm-row gap-2">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-area="Admin" asp-controller="Team" asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

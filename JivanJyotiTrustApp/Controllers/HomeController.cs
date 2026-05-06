@@ -29,6 +29,7 @@ public class HomeController : Controller
         {
             Banners = await _context.BannerItems.AsNoTracking().ToListAsync(),
             Classes = await _context.ClassItems.AsNoTracking().ToListAsync(),
+            TeamMembers = await _context.TeamMembers.AsNoTracking().OrderBy(x => x.Id).ToListAsync(),
             Stats = new StatsViewModel
             {
                 StudentsTrained = studentsTrained,
