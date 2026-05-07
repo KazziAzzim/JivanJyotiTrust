@@ -6,4 +6,5 @@ public class HomeViewModel
     public List<ClassItem> Classes { get; set; } = [];
     public StatsViewModel Stats { get; set; } = new();
     public List<TeamMember> TeamMembers { get; set; } = [];
+    public List<Content> AchievementsCertificatesContent { get; set; } = [];
 }

@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Home";
     var bannerItems = Model.Banners.Any() ? Model.Banners : [new BannerItem { Title = "Jivan Jyoti Trust", ImagePath = "/images/banners/placeholder-banner.svg" }];
+    var achievementsCertificates = Model.AchievementsCertificatesContent;
 }
 <section id="about" class="mb-5">
     <div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel" data-bs-pause="hover">
@@ -148,6 +149,80 @@
         </div>
     </div>
 </section>
+
+@if (achievementsCertificates.Any())
+{
+    <section id="achievements-certificates" class="achievements-certificates-section py-5 mt-5">
+        <div class="container">
+            <div class="section-header text-center mb-4 mb-lg-5 certificate-fade-in">
+                <span class="certificate-eyebrow text-uppercase">Recognition</span>
+                <h2 class="fw-bold mt-2 mb-3">Achievements &amp; Certificates</h2>
+                @{
+                    var descriptions = achievementsCertificates
+                        .Select(x => x.Description)
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToList();
+                }
+                @if (descriptions.Any())
+                {
+                    <div class="certificate-description text-muted mx-auto">
+                        @foreach (var description in descriptions)
+                        {
+                            @Html.Raw(description)
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                @foreach (var entry in achievementsCertificates)
+                {
+                    foreach (var file in entry.ContentFiles)
+                    {
+                        var extension = System.IO.Path.GetExtension(file.FileName).ToLowerInvariant();
+                        var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg" }.Contains(extension);
+                        var fileTypeLabel = extension switch
+                        {
+                            ".pdf" => "PDF FILE",
+                            ".doc" or ".docx" => "DOC FILE",
+                            _ => string.IsNullOrWhiteSpace(extension) ? "FILE" : $"{extension.TrimStart('.').ToUpperInvariant()} FILE"
+                        };
+                        var fileIcon = extension switch
+                        {
+                            ".pdf" => "bi-file-earmark-pdf-fill",
+                            ".doc" or ".docx" => "bi-file-earmark-word-fill",
+                            _ => "bi-file-earmark-text-fill"
+                        };
+
+                        <div class="col-12 col-md-6 col-lg-3 certificate-fade-in">
+                            <article class="certificate-card h-100">
+                                <a class="certificate-link" href="/Content/Download/@file.Id" aria-label="Download @file.FileName">
+                                    <div class="certificate-preview">
+                                        @if (isImage)
+                                        {
+                                            <img src="@file.FilePath" alt="@entry.Title" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <div class="certificate-file-placeholder">
+                                                <i class="bi @fileIcon" aria-hidden="true"></i>
+                                                <span>@fileTypeLabel</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="certificate-card-body">
+                                        <h3 class="certificate-card-title">@entry.Title</h3>
+                                        <p class="certificate-file-name mb-0">@file.FileName</p>
+                                    </div>
+                                </a>
+                            </article>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </section>
+}
 
 <style>
     body {
@@ -328,7 +403,10 @@
     @@media (prefers-reduced-motion: reduce) {
         .team-card,
         .team-card::before,
-        .team-avatar {
+        .team-avatar,
+        .certificate-card,
+        .certificate-preview img,
+        .certificate-fade-in {
             animation: none;
             transition: none;
         }
@@ -376,6 +454,118 @@
         font-weight: 500;
     }
 
+    .achievements-certificates-section {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        background: radial-gradient(circle at top right, rgba(47, 143, 99, 0.14), transparent 30%), linear-gradient(135deg, #f8fbff 0%, #ffffff 52%, #f4faf7 100%);
+    }
+
+    .certificate-eyebrow {
+        letter-spacing: 0.08em;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #2f8f63;
+    }
+
+    .certificate-description {
+        max-width: 820px;
+        line-height: 1.7;
+    }
+
+    .certificate-description p:last-child {
+        margin-bottom: 0;
+    }
+
+    .certificate-card {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .certificate-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .certificate-link {
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-decoration: none;
+    }
+
+    .certificate-preview {
+        height: 220px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+    }
+
+    .certificate-preview img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .certificate-card:hover .certificate-preview img {
+        transform: scale(1.04);
+    }
+
+    .certificate-file-placeholder {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        color: #0f4c81;
+        border: 1px solid rgba(15, 76, 129, 0.08);
+        background: linear-gradient(135deg, rgba(15, 76, 129, 0.1), rgba(47, 143, 99, 0.1));
+        text-align: center;
+    }
+
+    .certificate-file-placeholder i {
+        font-size: 3rem;
+    }
+
+    .certificate-file-placeholder span {
+        font-weight: 800;
+        letter-spacing: 0.08em;
+    }
+
+    .certificate-card-body {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        min-height: 112px;
+        padding: 1rem;
+    }
+
+    .certificate-card-title {
+        color: #1d2b3a;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.35;
+        margin-bottom: 0.5rem;
+    }
+
+    .certificate-file-name {
+        color: #5c6f82;
+        font-size: 0.9rem;
+        margin-top: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .certificate-fade-in {
+        animation: fadeUp 0.6s ease both;
+    }
+
     @@media (max-width: 991.98px) {
         #about,
         #classes,
@@ -383,7 +573,8 @@
         #about-content,
         #mission-vision,
         #team,
-        #impact-stats {
+        #impact-stats,
+        #achievements-certificates {
             margin-bottom: 2rem !important;
         }
 

@@ -30,6 +30,12 @@ public class HomeController : Controller
             Banners = await _context.BannerItems.AsNoTracking().ToListAsync(),
             Classes = await _context.ClassItems.AsNoTracking().ToListAsync(),
             TeamMembers = await _context.TeamMembers.AsNoTracking().OrderBy(x => x.Id).ToListAsync(),
+            AchievementsCertificatesContent = await _context.Contents
+                .AsNoTracking()
+                .Include(x => x.ContentFiles)
+                .Where(x => x.SectionKey == "achievementsCertificates")
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync(),
             Stats = new StatsViewModel
             {
                 StudentsTrained = studentsTrained,
