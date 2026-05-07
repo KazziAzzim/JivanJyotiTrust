@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "Home";
     var bannerItems = Model.Banners.Any() ? Model.Banners : [new BannerItem { Title = "Jivan Jyoti Trust", ImagePath = "/images/banners/placeholder-banner.svg" }];
+    var achievementsCertificates = Model.AchievementsCertificatesContent;
+    var achievementFiles = achievementsCertificates
+        .SelectMany(entry => entry.ContentFiles.OrderBy(file => file.Id).Select(file => new { Entry = entry, File = file }))
+        .Take(7)
+        .ToList();
 }
 <section id="about" class="mb-5">
     <div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel" data-bs-pause="hover">
@@ -148,6 +153,128 @@
         </div>
     </div>
 </section>
+
+@if (achievementFiles.Any())
+{
+    <section id="achievements-certificates" class="achievements-certificates-section py-5 mt-5">
+        <div class="container">
+            <div class="section-header text-center mb-4 mb-lg-5 certificate-fade-in">
+                <span class="certificate-eyebrow text-uppercase">Recognition</span>
+                <h2 class="fw-bold mt-2 mb-3">Achievements &amp; Certificates</h2>
+                @{
+                    var descriptions = achievementsCertificates
+                        .Select(x => x.Description)
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToList();
+                }
+                @if (descriptions.Any())
+                {
+                    <div class="certificate-description text-muted mx-auto">
+                        @foreach (var description in descriptions)
+                        {
+                            @Html.Raw(description)
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                @foreach (var achievementFile in achievementFiles)
+                {
+                    var entry = achievementFile.Entry;
+                    var file = achievementFile.File;
+                    var extension = System.IO.Path.GetExtension(file.FileName).ToLowerInvariant();
+                    var isImage = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg" }.Contains(extension);
+                    var fileType = extension switch
+                    {
+                        ".pdf" => "pdf",
+                        ".doc" or ".docx" => "doc",
+                        _ => isImage ? "image" : "file"
+                    };
+                    var fileTypeLabel = extension switch
+                    {
+                        ".pdf" => "PDF FILE",
+                        ".doc" or ".docx" => "DOC FILE",
+                        _ => string.IsNullOrWhiteSpace(extension) ? "FILE" : $"{extension.TrimStart('.').ToUpperInvariant()} FILE"
+                    };
+                    var fileIcon = extension switch
+                    {
+                        ".pdf" => "bi-file-earmark-pdf-fill",
+                        ".doc" or ".docx" => "bi-file-earmark-word-fill",
+                        _ => "bi-file-earmark-text-fill"
+                    };
+
+                    <div class="col-12 col-md-6 col-lg-3 certificate-fade-in">
+                        <article class="certificate-card h-100">
+                            <button class="certificate-link certificate-preview-trigger" type="button"
+                                    data-file-url="@file.FilePath"
+                                    data-download-url="/Content/Download/@file.Id"
+                                    data-file-type="@fileType"
+                                    data-title="@entry.Title"
+                                    data-file-name="@file.FileName"
+                                    aria-label="Preview @file.FileName">
+                                <div class="certificate-preview">
+                                    @if (isImage)
+                                    {
+                                        <img src="@file.FilePath" alt="@entry.Title" loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <div class="certificate-file-placeholder">
+                                            <i class="bi @fileIcon" aria-hidden="true"></i>
+                                            <span>@fileTypeLabel</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="certificate-card-body">
+                                    <h3 class="certificate-card-title">@entry.Title</h3>
+                                    <p class="certificate-file-name mb-0">@file.FileName</p>
+                                </div>
+                            </button>
+                        </article>
+                    </div>
+                }
+
+                <div class="col-12 col-md-6 col-lg-3 certificate-fade-in">
+                    <article class="certificate-card certificate-view-all-card h-100">
+                        <a class="certificate-link" href="/AchievementsCertificates" aria-label="View all achievements and certificates">
+                            <div class="certificate-preview certificate-view-all-preview">
+                                <div class="certificate-view-all-content">
+                                    <i class="bi bi-arrow-right-circle-fill" aria-hidden="true"></i>
+                                    <span>View All</span>
+                                </div>
+                            </div>
+                            <div class="certificate-card-body text-center">
+                                <h3 class="certificate-card-title">Achievements &amp; Certificates</h3>
+                                <p class="certificate-file-name mb-0">Explore the complete collection</p>
+                            </div>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade certificate-preview-modal" id="certificatePreviewModal" tabindex="-1" aria-labelledby="certificatePreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="certificatePreviewModalLabel">Certificate Preview</h5>
+                        <p class="certificate-modal-file-name text-muted mb-0"></p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="certificate-modal-preview"></div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a class="btn btn-primary certificate-modal-download" href="#" download><i class="bi bi-download me-1"></i>Download</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <style>
     body {
@@ -328,7 +455,11 @@
     @@media (prefers-reduced-motion: reduce) {
         .team-card,
         .team-card::before,
-        .team-avatar {
+        .team-avatar,
+        .certificate-card,
+        .certificate-preview img,
+        .certificate-view-all-content i,
+        .certificate-fade-in {
             animation: none;
             transition: none;
         }
@@ -376,6 +507,202 @@
         font-weight: 500;
     }
 
+    .achievements-certificates-section {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        background: radial-gradient(circle at top right, rgba(47, 143, 99, 0.14), transparent 30%), linear-gradient(135deg, #f8fbff 0%, #ffffff 52%, #f4faf7 100%);
+    }
+
+    .certificate-eyebrow {
+        letter-spacing: 0.08em;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #2f8f63;
+    }
+
+    .certificate-description {
+        max-width: 820px;
+        line-height: 1.7;
+    }
+
+    .certificate-description p:last-child {
+        margin-bottom: 0;
+    }
+
+    .certificate-card {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .certificate-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .certificate-link {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0;
+        text-align: left;
+        text-decoration: none;
+        width: 100%;
+    }
+
+    .certificate-preview {
+        height: 220px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #eef7ff 0%, #f8fbff 100%);
+    }
+
+    .certificate-preview img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .certificate-card:hover .certificate-preview img {
+        transform: scale(1.04);
+    }
+
+    .certificate-file-placeholder {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        color: #0f4c81;
+        border: 1px solid rgba(15, 76, 129, 0.08);
+        background: linear-gradient(135deg, rgba(15, 76, 129, 0.1), rgba(47, 143, 99, 0.1));
+        text-align: center;
+    }
+
+    .certificate-file-placeholder i {
+        font-size: 3rem;
+    }
+
+    .certificate-file-placeholder span {
+        font-weight: 800;
+        letter-spacing: 0.08em;
+    }
+
+    .certificate-card-body {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        min-height: 112px;
+        padding: 1rem;
+    }
+
+    .certificate-card-title {
+        color: #1d2b3a;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.35;
+        margin-bottom: 0.5rem;
+    }
+
+    .certificate-file-name {
+        color: #5c6f82;
+        font-size: 0.9rem;
+        margin-top: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .certificate-fade-in {
+        animation: fadeUp 0.6s ease both;
+    }
+
+
+    .certificate-view-all-card .certificate-link {
+        text-align: center;
+    }
+
+    .certificate-view-all-preview {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(15, 76, 129, 0.92), rgba(47, 143, 99, 0.9));
+    }
+
+    .certificate-view-all-content {
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+    }
+
+    .certificate-view-all-content i {
+        font-size: 3.25rem;
+        transition: transform 0.3s ease;
+    }
+
+    .certificate-view-all-card:hover .certificate-view-all-content i {
+        transform: translateX(6px);
+    }
+
+    .certificate-preview-modal .modal-content {
+        border: 0;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .certificate-preview-modal .modal-body {
+        background: #111827;
+        min-height: 320px;
+    }
+
+    .certificate-modal-preview {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        min-height: 320px;
+    }
+
+    .certificate-modal-preview img,
+    .certificate-modal-preview iframe {
+        max-height: 72vh;
+        max-width: 100%;
+        border: 0;
+        border-radius: 0.75rem;
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+    }
+
+    .certificate-modal-preview iframe {
+        background: #fff;
+        height: 72vh;
+        width: 100%;
+    }
+
+    .certificate-modal-placeholder {
+        color: #fff;
+        padding: 2rem;
+    }
+
+    .certificate-modal-placeholder i {
+        color: #9ec5fe;
+        display: block;
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
     @@media (max-width: 991.98px) {
         #about,
         #classes,
@@ -383,7 +710,8 @@
         #about-content,
         #mission-vision,
         #team,
-        #impact-stats {
+        #impact-stats,
+        #achievements-certificates {
             margin-bottom: 2rem !important;
         }
 
@@ -572,5 +900,41 @@
     runImpactCounterAnimation();
     }
     }
+
+
+    function showCertificatePreview(fileUrl, downloadUrl, fileType, title, fileName) {
+    const modalElement = document.getElementById('certificatePreviewModal');
+    if (!modalElement || typeof bootstrap === 'undefined') {
+    window.location.href = downloadUrl;
+    return;
+    }
+
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    const preview = $('.certificate-modal-preview');
+    $('.certificate-preview-modal .modal-title').text(title || 'Certificate Preview');
+    $('.certificate-modal-file-name').text(fileName || '');
+    $('.certificate-modal-download').attr('href', downloadUrl).attr('download', fileName || '');
+    preview.empty();
+
+    if (fileType === 'image') {
+    $('<img>', { src: fileUrl, alt: title || fileName || 'Certificate preview', class: 'img-fluid' }).appendTo(preview);
+    } else if (fileType === 'pdf') {
+    $('<iframe>', { src: fileUrl, title: title || fileName || 'PDF preview' }).appendTo(preview);
+    } else {
+    preview.html(`<div class="certificate-modal-placeholder"><i class="bi bi-file-earmark-arrow-down-fill" aria-hidden="true"></i><h5>Preview is not available for this file type.</h5><p class="mb-0">Please use the Download button to view the original document.</p></div>`);
+    }
+
+    modal.show();
+    }
+
+    $('.certificate-preview-trigger').on('click', function () {
+    const item = $(this);
+    showCertificatePreview(
+    item.data('file-url'),
+    item.data('download-url'),
+    item.data('file-type'),
+    item.data('title'),
+    item.data('file-name'));
+    });
     });
 </script>
