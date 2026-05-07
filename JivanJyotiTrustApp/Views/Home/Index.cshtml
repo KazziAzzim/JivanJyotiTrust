@@ -759,5 +759,41 @@
     runImpactCounterAnimation();
     }
     }
+
+
+    function showCertificatePreview(fileUrl, downloadUrl, fileType, title, fileName) {
+    const modalElement = document.getElementById('certificatePreviewModal');
+    if (!modalElement || typeof bootstrap === 'undefined') {
+    window.location.href = downloadUrl;
+    return;
+    }
+
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    const preview = $('.certificate-modal-preview');
+    $('.certificate-preview-modal .modal-title').text(title || 'Certificate Preview');
+    $('.certificate-modal-file-name').text(fileName || '');
+    $('.certificate-modal-download').attr('href', downloadUrl).attr('download', fileName || '');
+    preview.empty();
+
+    if (fileType === 'image') {
+    $('<img>', { src: fileUrl, alt: title || fileName || 'Certificate preview', class: 'img-fluid' }).appendTo(preview);
+    } else if (fileType === 'pdf') {
+    $('<iframe>', { src: fileUrl, title: title || fileName || 'PDF preview' }).appendTo(preview);
+    } else {
+    preview.html(`<div class="certificate-modal-placeholder"><i class="bi bi-file-earmark-arrow-down-fill" aria-hidden="true"></i><h5>Preview is not available for this file type.</h5><p class="mb-0">Please use the Download button to view the original document.</p></div>`);
+    }
+
+    modal.show();
+    }
+
+    $('.certificate-preview-trigger').on('click', function () {
+    const item = $(this);
+    showCertificatePreview(
+    item.data('file-url'),
+    item.data('download-url'),
+    item.data('file-type'),
+    item.data('title'),
+    item.data('file-name'));
+    });
     });
 </script>
