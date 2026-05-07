@@ -61,4 +61,43 @@ public class ApiController : ControllerBase
 
     [HttpGet("/api/classes/random")]
     public async Task<IActionResult> RandomClasses() => Ok(await _context.ClassItems.AsNoTracking().OrderBy(x => Guid.NewGuid()).Take(10).Select(x => new { x.Id, title = x.Name, imageUrl = x.ImagePath }).ToListAsync());
+
+    [HttpGet("/api/achievements")]
+    public async Task<IActionResult> Achievements([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+    {
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 8 : pageSize;
+        var skip = (page - 1) * pageSize;
+
+        var items = await _context.ContentFiles
+            .AsNoTracking()
+            .Include(x => x.Content)
+            .Where(x => x.Content != null && x.Content.SectionKey == "achievementsCertificates")
+            .OrderByDescending(x => x.Content!.CreatedAt)
+            .ThenBy(x => x.Id)
+            .Skip(skip)
+            .Take(pageSize)
+            .Select(x => new
+            {
+                id = x.Id,
+                fileUrl = x.FilePath,
+                downloadUrl = $"/Content/Download/{x.Id}",
+                fileType = GetFileType(x.FileName),
+                fileName = x.FileName,
+                title = x.Content != null ? x.Content.Title : string.Empty
+            })
+            .ToListAsync();
+
+        return Ok(items);
+    }
+
+    private static string GetFileType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        if (new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg" }.Contains(extension)) return "image";
+        if (extension == ".pdf") return "pdf";
+        if (extension is ".doc" or ".docx") return "doc";
+        return "file";
+    }
+
 }
